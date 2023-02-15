@@ -1,0 +1,9 @@
+1QUE ES UNA BASE DE DATOS RELACIONAL:
+Una base de datos relacional es aquella que esta constituida por tablas,filas y columnas,
+se puede relacionar entre tablas.
+2QUE ES DML:
+dml significa lenguaje de manipulacion de datos, manipulamos los datos de ubna base de datos mediante clausulas como
+el insert. 
+3QUE ES DDL:
+dml significa lenguaje de definicion de datos, definimos datos de una base de datos mediante clausulas como el create,
+delete,etc
