@@ -140,17 +140,19 @@ CREATE OR REPLACE FUNCTION DESCRIPCION (CATEGORIA VARCHAR(50), EDITORIAL VARCHAR
 RETURNS VARCHAR(100)
 BEGIN
 DECLARE RESP VARCHAR(100);
-SELECT CONCAT('EDITORIAL: ',BK.editorial,',','CATEGORIA: ',CAT.type) AS DESCRIPTION ,
-       (CASE WHEN DETERMINAR(BK.pages) THEN CONCAT('PAR: ',BK.pages)
-           WHEN DETERMINAR(BK.pages)  THEN CONCAT('IMPAR: ',BK.pages)
-           END) AS PAGE INTO RESP
-from book as bk
-inner join prestamos as pr on bk.id_book = pr.id_book
-inner join category as cat on bk.id_book = cat.id_book
-WHERE  CAT.type = CATEGORIA and BK.editorial = EDITORIAL;
+Set RESP = CONCAT('CATEGORIA: ',CATEGORIA,',','EDITORIAL: ',EDITORIAL);
 RETURN RESP;
 end;
 SELECT DESCRIPCION('MANGA','IBRANI');
+
+#======================================================================================#
+
+SELECT DESCRIPCION(CAT.type,BK.editorial) as DESCRIPCION,
+       CONCAT(DETERMINAR(BK.pages),': ',BK.pages)   AS PAGINAS
+from book as bk
+inner join prestamos as pr on bk.id_book = pr.id_book
+inner join category as cat on bk.id_book = cat.id_book
+WHERE  CAT.type = 'MANGA' and BK.editorial = 'IBRANI';
 
 #EN UN SELECT
 SELECT CONCAT('EDITORIAL: ',BK.editorial,',','CATEGORIA: ',CAT.type) AS DESCRIPTION,
