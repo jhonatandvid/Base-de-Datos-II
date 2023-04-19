@@ -1,0 +1,290 @@
+create database hito3_2023;
+use hito3_2023;
+#CREACION DE VARIABLES MYSQL ES MULTIUSUARIO Y CADA USUARIO PUEDE CREAR SU PROPIA VARIABLE
+#USANDO SET, LA VARIABLE CREADA SOLO ESTA EN ESA BASE DE DATO
+SET @USUARIO = 'GUEST';
+SET @LOCACION = 'EL ALTO';
+SET @hito3 = 'ADMIN';
+
+SELECT @USUARIO;
+SELECT @LOCACION;
+
+CREATE OR REPLACE FUNCTION VARIABLE()
+RETURNS TEXT
+BEGIN
+    RETURN @USUARIO;
+end;
+SELECT VARIABLE();
+#CREAR UNA VARIABLE DE NOMBRE GLOBAL DE NOMBRE HITO3
+#A ESTA VARIABLE ASIGNARLE EL VALOR ADMIN
+#CREAR U8NA FUNCION QUE MANEJE ESTA VARIABLE GLOBAL
+#SI EL VALOR DE LA VARIBALE GLOBAL ES ADMIN
+#RETORNA UN MENSAJE QUE DIGA. "USUARIO ADMIN"
+#SI ES DISTINTO DE ADMIN, RETORNAN EL MENSAJE "USUARIO UNVITADO"
+
+CREATE OR REPLACE FUNCTION VARIABLE2()
+RETURNS TEXT
+BEGIN
+    DECLARE RESP TEXT;
+    IF @hito3 = 'ADMIN' then
+       SET RESP = 'usuario ADMIN';
+end if;
+    IF @hito3 != 'ADMIN' then
+      SET RESP = 'usuario INVITADO';
+end if;
+    RETURN RESP;
+end;
+SELECT VARIABLE2();
+
+CREATE OR REPLACE FUNCTION VARIABLEV3()
+RETURNS TEXT
+BEGIN
+    DECLARE RESP TEXT;
+    CASE
+        WHEN @hito3 = 'ADMIN' then
+            SET RESP = 'usuario ADMIN';
+        ELSE
+            SET RESP = 'usuario INVITADO';
+    END CASE;
+    RETURN RESP;
+end;
+SELECT VARIABLEV3();
+#GENERAR LOS PRIEMROS 10 NUMEROS NATURALES
+CREATE OR REPLACE FUNCTION NUMEROSNATURALES(LIMITE INT)
+RETURNS TEXT
+BEGIN
+    DECLARE RESP TEXT DEFAULT '';
+    DECLARE CONT INT DEFAULT 1;
+   WHILE CONT <= LIMITE DO
+       SET RESP = CONCAT(RESP,CONT,',');
+       SET CONT = CONT + 1;
+       end while;
+    RETURN RESP;
+end;
+SELECT NUMEROSNATURALES(10);
+#V2
+CREATE OR REPLACE FUNCTION NUMEROSNATURALESV2(LIMITE INT)
+RETURNS TEXT
+BEGIN
+    DECLARE RESP TEXT DEFAULT '';
+    DECLARE CONT INT DEFAULT 2;
+   WHILE CONT <= LIMITE DO
+       SET RESP = CONCAT(RESP,CONT,',');
+       SET CONT = CONT + 2;
+       end while;
+    RETURN RESP;
+end;
+SELECT NUMEROSNATURALESV2(10);
+#EJERICIO 1
+CREATE OR REPLACE FUNCTION NUMEROSNATURALESV3(LIMITE INT)
+RETURNS TEXT
+BEGIN
+
+    DECLARE RESP TEXT DEFAULT '';
+    DECLARE CONT INT DEFAULT 2;
+    DECLARE CONT2 INT DEFAULT 1;
+   WHILE CONT <= LIMITE DO
+       SET RESP = CONCAT(RESP,CONT,',',CONT2,',');
+       SET CONT = CONT + 2;
+       SET CONT2 = CONT2 + 2;
+       end while;
+    RETURN RESP;
+end;
+
+SELECT NUMEROSNATURALESV3(10);
+
+#VERSION DEL ING
+CREATE OR REPLACE FUNCTION NUMEROSNATURALESV4(LIMITE INT)
+RETURNS TEXT
+BEGIN
+
+    DECLARE RESP TEXT DEFAULT '';
+    DECLARE CONT INT DEFAULT 1;
+    DECLARE PARES INT DEFAULT 2;
+    DECLARE IMPARES INT DEFAULT 1;
+
+   WHILE CONT <= LIMITE DO
+       IF CONT % 2 = 1 THEN
+           SET RESP = CONCAT(RESP,PARES,',');
+            SET PARES = PARES + 2;
+       ELSE
+           SET RESP = CONCAT(RESP,IMPARES,',');
+       SET IMPARES = IMPARES + 2;
+           END IF;
+    SET CONT = CONT +1;
+    end while;
+    RETURN RESP;
+end;
+SELECT NUMEROSNATURALESV4(10);
+
+##do while en una base de datos
+
+# repeat
+# LOGICA
+# until CONDICION
+# end repeat;
+
+##APLICANDO EL WHILE(REPEAT)
+# CREANDO LA SOGUIENTE SERIE : 10,9,8,7,6,5,4,3,2,1,
+CREATE OR REPLACE FUNCTION EJEMPLOWHILE(x INT)
+RETURNS TEXT
+BEGIN
+   DECLARE str TEXT DEFAULT '';
+     repeat
+        set str = CONCAT(str,x,',');
+        set x = x - 1;
+        until x <= 0
+     end repeat;
+   RETURN str;
+end;
+select EJEMPLOWHILE(10);
+##EJERCICIO 2 DO WHILE GENERAR LA SIGUIENTE SERIE:
+# 10 -AA-,9 -BB-,8 -AA-,7 -BB-,6 -AA-,5 -BB-,4 -AA-,3 -BB-,2 -AA-,1 -BB-,
+CREATE OR REPLACE FUNCTION EJEMPLOWHILE2(x INT)
+RETURNS TEXT
+BEGIN
+   DECLARE str TEXT DEFAULT '';
+   DECLARE A TEXT DEFAULT '-AA-';
+   DECLARE B TEXT DEFAULT '-BB-';
+   repeat
+       IF x % 2 = 1 THEN
+           SET str = CONCAT(str,x,' ',B,'' );
+       ELSE
+           SET str = CONCAT(str,x,' ',A,' ');
+           END IF;
+        set x = x - 1;
+        until x <= 0
+     end repeat;
+   RETURN str;
+end;
+SELECT EJEMPLOWHILE2(10);
+## LOOP (LEAVE-ITERATE)
+
+# LOOP_LABEL:LOOP
+     # condicion
+#    IF X > 0
+#        THEN
+#            LEAVE LOOP_LABEL;
+#    end if; fin de la condicion
+#    SET str = CONCAT(str,x,',');
+#    SET x = x +1;
+#    ITERATE LOOP_LABEL; nos dice que vuelva a iterar
+# end loop;
+
+CREATE OR REPLACE FUNCTION MANEJOLOOP(x INT)
+RETURNS TEXT
+BEGIN
+    DECLARE str text default ' ';
+    bdaii:LOOP
+    IF X > 0
+    THEN
+            LEAVE bdaii;
+    end if;
+    SET str = CONCAT(str,x,',');
+    SET x = x + 1;
+    ITERATE bdaii;
+end loop;
+   RETURN str;
+end;
+select MANEJOLOOP(-10);
+
+##EJERCICIO 2 LOOP GENERAR LA SIGUIENTE SERIE:
+# 10 -AA-,9 -BB-,8 -AA-,7 -BB-,6 -AA-,5 -BB-,4 -AA-,3 -BB-,2 -AA-,1 -BB-,
+CREATE OR REPLACE FUNCTION MANEJOLOOPV2(x INT)
+RETURNS TEXT
+BEGIN
+    DECLARE str text default ' ';
+    DECLARE A TEXT DEFAULT '-AA-';
+    DECLARE B TEXT DEFAULT '-BB-';
+    bdaii:LOOP
+    IF x<0 THEN
+             LEAVE bdaii;
+       END IF;
+      IF x % 2 = 1 THEN
+           SET str = CONCAT(str,x,' ',B,'' );
+       ELSE
+           SET str = CONCAT(str,x,' ',A,' ');
+           END IF;
+    SET x = x - 1;
+    ITERATE bdaii;
+end loop;
+   RETURN str;
+end;
+SELECT MANEJOLOOPV2(10);
+
+##EJERCICIOS DE LOOP Y DO WHILE
+
+CREATE OR REPLACE FUNCTION LAB1(CreateNumber INT)
+RETURNS TEXT
+BEGIN
+    declare resp text default 'NONE';
+    if CreateNumber > 50000 then set resp = 'PLATINIUM';
+    end if;
+     if CreateNumber >= 10000 AND CreateNumber <= 50000 then set resp = 'GOLD';
+    end if;
+    if CreateNumber < 10000 AND CreateNumber >=0 then set resp = 'SILVER';
+    end if;
+    RETURN RESP;
+end;
+SELECT LAB1(50000);
+#FUNCIONES DE LA BASE DE DATOS
+#1) CHAR_LENGTH= NOS PERMITE DETERMINAR CUANTOS CARACTERES TIENE UAN PALABRA
+#EJEMPLO
+SELECT CHAR_LENGTH(' bdaii ') ;# se cuenta al espacio dentro de las comillas como un caracter
+#ejemplo en ejercicio
+CREATE OR REPLACE FUNCTION valido_length_7(password TEXT)
+returns text
+begin
+    declare resp text default '';
+    if char_length(password)>7 then
+        set resp = 'PASED';
+        else
+        set resp = 'FAILED';
+    end if;
+    RETURN resp;
+end;
+SELECT valido_length_7('BDAIIAVG');
+#COMPARACION DE CADENAS
+#STRCMP
+#EL OBJETIVO ES SABER SI DOS CADENAS SON IGUALES
+#BDAII = BDAII ? TRUE
+#BDAII = BDAII 2023? FALSE
+#EN MySQL O MARIADB
+#SI SON IGUALES LA FUNCION ME RETOMA 0
+#SI SON DISTINTOS LA FUNCION ME RETORNA -1
+#EJEMPLO
+SELECT STRCMP('bdaii','BDAII');
+SELECT STRCMP('bdaii','BDAII2023');
+#EJEMPLO EN FUNCION
+CREATE OR REPLACE FUNCTION COMPARARCADENAS(CADENA1 TEXT,CADENA2 TEXT)
+returns text
+begin
+    declare resp text default '';
+    if STRCMP(CADENA1,CADENA2) = 0 then
+        set resp = 'CADENAS IGUALES';
+        else
+        set resp = 'CADENAS DISTINTAS';
+    end if;
+    RETURN resp;
+end;
+SELECT COMPARARCADENAS('bdaii','BDAII');
+#EN BASE A LAS 2 FUNCIONES ANTERIORES DETERMINAR LO SIGUIENTE
+#RECIDIR 2 CADENAS, SI LAS 2 SON IGUALES Y ADEMAS EL LENGTH ES
+#MAYOR A 15 RETORNAR EL MENSAJE "VALIDO"
+#CASO CONTRARIO RETORNA "NO VALIDO"
+CREATE OR REPLACE FUNCTION CADENASLABS1(CADENA1 TEXT,CADENA2 TEXT)
+returns text
+begin
+    declare resp text default '';
+    DECLARE UNIT TEXT DEFAULT CONCAT(CADENA1,CADENA2);
+    if char_length(UNIT)>15 then
+        set resp = 'VALIDO';
+        else
+        set resp = 'NO VALIDO';
+    end if;
+    RETURN resp;
+end;
+SELECT CADENASLABS1('BDAII','CADENACADENA')
+
+
+
