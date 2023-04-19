@@ -277,11 +277,16 @@ returns text
 begin
     declare resp text default '';
     DECLARE UNIT TEXT DEFAULT CONCAT(CADENA1,CADENA2);
-    if char_length(UNIT)>15 then
+    if strcmp(CADENA1,CADENA2) = 0 then
+        if char_length(UNIT)>15 then
         set resp = 'VALIDO';
         else
         set resp = 'NO VALIDO';
     end if;
+        else
+        set resp ='no valido';
+        end if;
+
     RETURN resp;
 end;
 SELECT CADENASLABS1('BDAII','CADENACADENA')
